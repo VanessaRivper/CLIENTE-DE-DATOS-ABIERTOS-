@@ -67,3 +67,17 @@ def guardar_csv(datos):
       escritor.writerow(["Nombre", "Capital", "Region", "Población", "Area"])
 
       escritor.writerows(datos)
+
+def calcular_estadisticas(datos):
+
+  pais_poblado = max(datos, key=lambda x:[3])
+
+  pais_grande = max(datos, key=lambda x: x[4])
+
+  return (pais_poblado, pais_grande)
+
+def crear_reporte(pais_poblado, pais_grande, total):
+
+  print("Iniciando programa...")
+
+  datos = obtener_datos()
