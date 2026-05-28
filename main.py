@@ -55,3 +55,15 @@ def limpiar_datos(datos):
     datos_limpios.append([nombre, capital, region, poblacion, area])
 
 return datos_limpios
+
+def guardar_csv(datos):
+
+  ruta = os.path.join(CARPETA, "paises.csv")
+
+  with open(ruta, "w", newline="", encoding="utf-8") as archivo:
+
+      escritor = csv.writer(archivo)
+
+      escritor.writerow(["Nombre", "Capital", "Region", "Población", "Area"])
+
+      escritor.writerows(datos)
