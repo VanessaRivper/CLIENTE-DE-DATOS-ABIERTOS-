@@ -11,7 +11,9 @@ if not os.path.exists(CARPETA):
 
 def obtener_datos():
 
-  url =
+  url =  https://restcountries.com/v3.1/all?fields=name,capital,region,population,area,flags,languages,
+currencies,timezones,borders
+
 
   try: 
 
