@@ -10,25 +10,15 @@ if not os.path.exists(CARPETA):
   os.makedirs(CARPETA)
 
 def obtener_datos():
+    url = "https://restcountries.com/v3.1/all?fields=name,capital,region,population,area"
 
-  url =  https://restcountries.com/v3.1/all?fields=name,capital,region,population,area,flags,languages,
-currencies,timezones,borders
-
-
-  try: 
-
-      respuesta = respuesta.get(
-        url,
-        timeout=10
-      )
-
-      respuesta.raise_for_status()
-
-      return respuesta.json()
-
-  except Exception:
-    print("Error al obtener datos.")
-    return []
+    try:
+        respuesta = requests.get(url, timeout=20)
+        respuesta.raise_for_status()
+        return respuesta.json()
+    except Exception as e:
+        print("Error al obtener datos.", e)
+        return []
 
 def guardar_json(datos):
 
@@ -46,7 +36,8 @@ def limpiar_datos(datos):
 
     nombre = pais.get("name", {}).get("common", "No disponible")
 
-    capital = (pais.get("capital", ["No disponible"])[0])
+    capitales = pais.get("capital", ["No disponible"])
+    capital = capitales[0] if capitales else "No disponible"
 
     region = pais.get("region", "No disponible")
 
@@ -56,7 +47,7 @@ def limpiar_datos(datos):
 
     datos_limpios.append([nombre, capital, region, poblacion, area])
 
-return datos_limpios
+  return datos_limpios
 
 def guardar_csv(datos):
 
@@ -80,6 +71,43 @@ def calcular_estadisticas(datos):
 
 def crear_reporte(pais_poblado, pais_grande, total):
 
+    ruta = os.path.join(CARPETA, "reporte.txt") 
+
+    with open(ruta, "w", encoding="utf-8") as archivo:
+        archivo.write("REPORTE DE DATOS ABIERTOS\n")
+        archivo.write(f"Fecha: {datetime.now()}\n")
+        archivo.write(f"Total de paises: {total}\n\n")
+
+        archivo.write("Pais mas poblado:\n")
+        archivo.write(f"Nombre: {pais_poblado[0]}\n")
+        archivo.write(f"Poblacion: {pais_poblado[3]}\n\n")
+
+        archivo.write("Pais con mayor area:\n")
+        archivo.write(f"Nombre: {pais_grande[0]}\n")
+        archivo.write(f"Area: {pais_grande[4]}\n")
+def main(): 
   print("Iniciando programa...")
 
   datos = obtener_datos()
+  if not datos:
+    print("No se pudieron obtener datos.")
+    return
+  
+  guardar_json(datos)
+
+  datos_limpios = limpiar_datos(datos)
+
+  guardar_csv(datos_limpios)
+
+  pais_poblado, pais_grande = calcular_estadisticas(datos_limpios)
+
+  crear_reporte(pais_poblado, pais_grande, len(datos_limpios))
+
+  print("Proceso terminado correctamente.")
+  print("Archivos generados en la carpeta:", CARPETA)
+
+if __name__ == "__main__":
+    main()
+
+
+
