@@ -10,7 +10,7 @@ if not os.path.exists(CARPETA):
   os.makedirs(CARPETA)
 
 def obtener_datos():
-    url = https://restcountries.com/v3.1/all?fields=name,capital,region,population,area
+    url = https://restcountries.com/v3.1/all?fields=name,capital,region,population,area,flags,languages,currencies,timezones,borders
 
     try:
         respuesta = requests.get(url, timeout=20)
